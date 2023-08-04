@@ -19,16 +19,16 @@ const SavedBooks = () => {
   const [userData, setUserData] = useState({});
 
   // use this to determine if `useEffect()` hook needs to run again
-  const userDataLength = Object.keys(userData).length;
+ 
   const { loading, data } = useQuery(ME)
   const [RemoveBook] = useMutation(REMOVEBOOK,{
-    update(cache, { data: { RemoveBook} }) {
+    update(cache, { data: { removeBook} }) {
       try {
         const {savedBooks } = cache.readQuery({ query: ME});
 
         cache.writeQuery({
           query: ME,
-          data: { savedBooks: [RemoveBook, ...savedBooks] },
+          data: { savedBooks: [removeBook, ...savedBooks] },
         });
       } catch (e) {
         console.error(e);
@@ -38,7 +38,7 @@ const SavedBooks = () => {
       const { me } = cache.readQuery({ query: ME});
       cache.writeQuery({
         query: ME,
-        data: { me: { ...me, savedBooks: [...me.savedBooks, RemoveBook] } },
+        data: { me: { ...me, savedBooks: [...me.savedBooks, removeBook] } },
       });
     },
   })
@@ -78,8 +78,8 @@ const SavedBooks = () => {
       </div>
       <Container>
         <h2 className='pt-5'>
-          {savedBooks.length
-            ? `Viewing ${savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
+          {!loading
+            ? `Viewing ${savedBooks.length} saved ${savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
         <Row>
